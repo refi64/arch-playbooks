@@ -13,4 +13,6 @@ keymap=us
 locale=en_US.UTF-8
 timezone=US/Central
 
+hostname=arch-vm
 network_device=enp1s0
+dns="8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844"

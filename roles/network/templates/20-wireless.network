@@ -1,0 +1,6 @@
+[Match]
+Name={{ network_device }}
+
+[Network]
+DHCP=ipv4
+

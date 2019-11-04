@@ -19,3 +19,4 @@
   gather_facts: false
   roles:
     - region
+    - network

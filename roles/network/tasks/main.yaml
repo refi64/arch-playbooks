@@ -1,0 +1,44 @@
+- name: Set the hostname
+  copy:
+    content: "{{ hostname }}\n"
+    dest: /etc/hostname
+
+# NOTE: /etc/hosts is not updated, because nsswitch.conf already contains
+# myhostname, so no need to do that.
+
+- name: Enable systemd-networkd
+  systemd:
+    name: systemd-networkd.service
+    enabled: true
+
+- name: Save the networkd config
+  template:
+    src: 20-wireless.network
+    dest: /etc/systemd/network/20-wireless.network
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable systemd-resolved
+  systemd:
+    name: systemd-resolved.service
+    enabled: true
+
+- name: Set the DNS servers
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '#DNS='
+    line: 'DNS={{ dns }}'
+
+- name: Disable dnssec
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '#DNSSEC=allow-downgrade'
+    line: 'DNSSEC=no'
+
+- name: Enable DNS over TLS
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '#DNSOverTLS=off'
+    line: 'DNSOverTLS=opportunistic'
+
