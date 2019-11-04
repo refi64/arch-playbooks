@@ -1,0 +1,20 @@
+- name: Mount the new rootfs
+  command: 'mount {{ target_disk|quote }}2 {{ mount_point }}'
+  args:
+    warn: false
+
+- name: Mount the swap
+  command: 'swapon {{ target_disk|quote }}1'
+
+- name: Bootstrap the rootfs
+  command: 'pacstrap {{ mount_point|quote }} base linux linux-firmware python {{ extra_packages }}'
+
+- name: Generate the fstab
+  command: 'genfstab -U {{ mount_point|quote }}'
+  register: genfstab
+
+- name: Save the fstab
+  copy:
+    content: "{{ genfstab.stdout }}\n"
+    dest: '{{ mount_point }}/etc/fstab'
+

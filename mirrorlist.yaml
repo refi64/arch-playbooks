@@ -1,0 +1,15 @@
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Download the mirrorlist
+      get_url:
+        url: 'https://archlinux.org/mirrorlist/?country={{ mirrorlist_region }}&protocol=http&protocl=https&ip_version=4'
+        dest: /etc/pacman.d/mirrorlist
+        mode: '0644'
+    - name: Enable the mirrorlist servers
+      replace:
+        path: /etc/pacman.d/mirrorlist
+        regexp: '^#(Server)'
+        replace: '\1'
+

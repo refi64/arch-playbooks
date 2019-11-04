@@ -1,0 +1,21 @@
+#- hosts: all
+#  gather_facts: false
+
+# roles:
+#    - disk
+#    - bootstrap
+
+- hosts: all
+  gather_facts: false
+  tasks:
+    - add_host:
+        name: chroot
+        groups: all
+        ansible_connection: chroot
+        ansible_chroot_exe: /usr/bin/arch-chroot
+        ansible_host: '{{ mount_point }}'
+
+- hosts: chroot
+  gather_facts: false
+  roles:
+    - region

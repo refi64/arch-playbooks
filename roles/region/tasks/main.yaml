@@ -1,0 +1,30 @@
+- name: Set the time zone
+  file:
+    src: '/usr/share/zoneinfo/{{ timezone }}'
+    dest: /etc/localtime
+    state: link
+    force: true
+
+- name: Configure the system clock
+  command: 'hwclock --systohc'
+
+- name: Uncomment the desired locale
+  lineinfile:
+    path: /etc/locale.gen
+    regexp: '^#({{ locale }}\s+.+)'
+    line: '\1'
+    backrefs: true
+
+- name: Generate the locale database
+  command: locale-gen
+
+- name: Create the locale configuration file
+  copy:
+    content: "LANG={{ locale }}\n"
+    dest: /etc/locale.conf
+
+- name: Set the keymap
+  copy:
+    content: "KEYMAP={{ keymap }}\n"
+    dest: /etc/vconsole.conf
+

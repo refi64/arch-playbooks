@@ -1,0 +1,16 @@
+[all]
+localhost ansible_connection=local
+
+[all:vars]
+mirrorlist_region=US
+
+target_disk=/dev/vda
+extra_packages=base-devel
+swap_partition_size=4GiB
+root_partition_type=xfs
+
+keymap=us
+locale=en_US.UTF-8
+timezone=US/Central
+
+network_device=enp1s0
