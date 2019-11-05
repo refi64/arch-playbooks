@@ -1,0 +1,6 @@
+- name: Install grub
+  command: 'grub-install --target=i386-pc {{ target_disk }}'
+
+- name: Generate the grub config
+  command: grub-mkconfig -o /boot/grub/grub.cfg
+

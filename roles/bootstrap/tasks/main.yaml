@@ -1,13 +1,27 @@
 - name: Mount the new rootfs
-  command: 'mount {{ target_disk|quote }}2 {{ mount_point }}'
+  command: 'mount {{ target_disk|quote }}{{ root_partition }} {{ mount_point|quote }}'
+  args:
+    warn: false
+
+- name: Create the boot directory
+  file:
+    path: '{{ mount_point }}/boot'
+    state: directory
+    mode: '0755'
+
+- name: Mount the boot partition
+  command: 'mount {{ target_disk|quote }}{{ boot_partition }} {{ mount_point|quote }}/boot'
   args:
     warn: false
 
 - name: Mount the swap
-  command: 'swapon {{ target_disk|quote }}1'
+  command: 'swapon {{ target_disk|quote }}{{ swap_partition }}'
 
 - name: Bootstrap the rootfs
-  command: 'pacstrap {{ mount_point|quote }} base linux linux-firmware python {{ extra_packages }}'
+  command: >-
+    pacstrap {{ mount_point|quote }}
+    base linux linux-firmware python sudo grub
+    {{ extra_packages }}
 
 - name: Generate the fstab
   command: 'genfstab -U {{ mount_point|quote }}'

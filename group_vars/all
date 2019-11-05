@@ -1,1 +1,4 @@
 mount_point: /mnt
+boot_partition: 1
+swap_partition: 2
+root_partition: 3

@@ -5,7 +5,9 @@
   register: original_device_info
     
 - name: Unmount any mounted partitions
-  shell: 'swapoff {{ target_disk|quote }}{{ item.num }} || umount {{ target_disk|quote }}{{ item.num }} ||:'
+  shell: >
+    swapoff {{ target_disk|quote }}{{ item.num }} 
+    || umount {{ target_disk|quote }}{{ item.num }} ||:
   loop: '{{ original_device_info.partitions }}'
 
 - name: Wipe the target device
@@ -15,30 +17,47 @@
     state: absent
   loop: '{{ original_device_info.partitions }}'
 
+- name: Create the boot partition
+  parted:
+    device: '{{ target_disk }}'
+    number: '{{ boot_partition }}'
+    state: present
+    flags: boot
+    part_end: '1GiB'
+
 - name: Create the swap partition 
   parted:
     device: '{{ target_disk }}'
-    number: 1
+    number: '{{ swap_partition }}'
     state: present
-    part_end: '{{ swap_partition_size }}'
+    part_start: '1GiB'
+    part_end: '{{ swap_partition_size_gb + 1 }}GiB'
 
 - name: Create the root partition
   parted:
     device: '{{ target_disk }}'
-    number: 2
+    number: '{{ root_partition }}'
     state: present
-    flags: boot
-    part_start: '{{ swap_partition_size }}'
+    part_start: '{{ swap_partition_size_gb + 1 }}GiB'
+
+- name: Format the boot partition
+  filesystem:
+    fstype: ext4
+    dev: '{{ target_disk }}{{ boot_partition }}'
+    force: true
+  changed_when: true
 
 - name: Format the swap partition
   filesystem:
     fstype: swap
-    dev: '{{ target_disk }}1'
+    dev: '{{ target_disk }}{{ swap_partition }}'
+    force: true
   changed_when: true
 
 - name: Format the root partition
   filesystem:
     fstype: '{{ root_partition_type }}'
-    dev: '{{ target_disk }}2'
+    dev: '{{ target_disk }}{{ root_partition }}'
+    force: true
   changed_when: true
 

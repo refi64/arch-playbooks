@@ -1,7 +1,7 @@
 #- hosts: all
 #  gather_facts: false
 
-# roles:
+#  roles:
 #    - disk
 #    - bootstrap
 
@@ -20,3 +20,5 @@
   roles:
     - region
     - network
+    - user
+    - boot

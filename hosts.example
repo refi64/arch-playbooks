@@ -5,8 +5,8 @@ localhost ansible_connection=local
 mirrorlist_region=US
 
 target_disk=/dev/vda
-extra_packages=base-devel
-swap_partition_size=4GiB
+extra_packages="zsh intel-ucode"
+swap_partition_size_gb=4
 root_partition_type=xfs
 
 keymap=us
@@ -16,3 +16,6 @@ timezone=US/Central
 hostname=arch-vm
 network_device=enp1s0
 dns="8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844"
+
+username=ryan
+shell=/bin/zsh

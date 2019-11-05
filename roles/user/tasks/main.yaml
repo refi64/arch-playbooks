@@ -1,0 +1,22 @@
+- name: Create a new user
+  user:
+    name: '{{ username }}'
+    shell: '{{ shell }}'
+    groups: wheel
+    append: true
+
+- name: 'Set the password for {{ item }}'
+  user:
+    name: '{{ item }}'
+    password: "{{ lookup('file', playbook_dir + '/pass') }}"
+  loop:
+    - root
+    - '{{ username }}'
+
+- name: Allow wheel to sudo
+  lineinfile:
+    path: '/etc/sudoers'
+    regexp: '# (%wheel ALL=\(ALL\) ALL)'
+    line: '\1'
+    backrefs: true
+

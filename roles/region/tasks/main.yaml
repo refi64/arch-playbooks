@@ -28,3 +28,8 @@
     content: "KEYMAP={{ keymap }}\n"
     dest: /etc/vconsole.conf
 
+- name: Enable systemd-timesyncd
+  systemd:
+    name: systemd-timesyncd.service
+    enabled: true
+
